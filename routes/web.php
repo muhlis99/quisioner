@@ -12,8 +12,6 @@ use App\Http\Controllers\Admin\SkorController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Mahasiswa\DashboardController as MahasiswaDashboardController;
-use App\Http\Controllers\Mahasiswa\KetuntasanController as MahasiswaKetuntasanController;
-use App\Http\Controllers\Mahasiswa\MakulController as MahasiswaMakulController;
 use App\Http\Controllers\Mahasiswa\QuisionerController as MahasiswaQuisionerController;
 use Illuminate\Support\Facades\Route;
 
@@ -69,8 +67,9 @@ Route::prefix('admin')
             ->parameters(['jatah-makul' => 'jatahMakul'])
             ->except(['show']);
 
-        // 7. Menu Monitoring Ketuntasan (tb_ketuntasan)
+        // 7. Menu Monitoring Ketuntasan (Rekap Per-Mahasiswa, Total Skor & Rata-rata Nilai)
         Route::get('/ketuntasan', [KetuntasanController::class, 'index'])->name('ketuntasan.index');
+        Route::get('/ketuntasan/{nim}', [KetuntasanController::class, 'show'])->name('ketuntasan.show');
         Route::delete('/ketuntasan/{ketuntasan}', [KetuntasanController::class, 'destroy'])->name('ketuntasan.destroy');
 
         // 8. Menu Kelola Pengguna (tb_users: Tab Non-Mahasiswa & Tab Mahasiswa + Generate Massal & Reset Password)
@@ -92,9 +91,7 @@ Route::prefix('mahasiswa')
         Route::get('/quisioner/{quisioner}/isi', [MahasiswaQuisionerController::class, 'show'])->name('quisioner.show');
         Route::post('/quisioner/{quisioner}/isi', [MahasiswaQuisionerController::class, 'store'])->name('quisioner.store');
 
-        // Menu Mata Kuliah Diambil (tb_jatah_makul)
-        Route::get('/mata-kuliah', [MahasiswaMakulController::class, 'index'])->name('makul.index');
-
-        // Menu Status Ketuntasan (tb_ketuntasan)
-        Route::get('/ketuntasan', [MahasiswaKetuntasanController::class, 'index'])->name('ketuntasan.index');
+        // Redirect route lama Mata Kuliah Diambil & Status Ketuntasan ke Dashboard Mahasiswa agar tidak 404
+        Route::get('/mata-kuliah', fn () => redirect()->route('mahasiswa.dashboard'))->name('makul.index');
+        Route::get('/ketuntasan', fn () => redirect()->route('mahasiswa.dashboard'))->name('ketuntasan.index');
     });

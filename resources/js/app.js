@@ -389,14 +389,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Tutup Flash Alert
+    // 2. Tutup Flash Alert dengan Animasi Halus
     document.querySelectorAll('[data-close-alert]').forEach((btn) => {
         btn.addEventListener('click', () => {
-            btn.closest('[data-alert]')?.remove();
+            const alertBox = btn.closest('[data-alert]');
+            if (!alertBox) return;
+            alertBox.classList.add('opacity-0', '-translate-y-1', 'pointer-events-none');
+            window.setTimeout(() => alertBox.remove(), 200);
         });
     });
 
-    // 3. Toggle Tampilkan/Sembunyikan Password (Halaman Login)
+    // 3. Toggle Tampilkan/Sembunyikan Password & Loading State Anti Double-Submit (Halaman Login)
     const togglePasswordBtn = document.getElementById('toggle-password');
     const passwordInput = document.getElementById('password');
     const eyeOpen = document.getElementById('eye-open');
@@ -409,6 +412,36 @@ document.addEventListener('DOMContentLoaded', () => {
         eyeOpen?.classList.toggle('hidden', isPassword);
         eyeClosed?.classList.toggle('hidden', !isPassword);
     });
+
+    const loginForm = document.getElementById('login-form');
+    const loginSubmitBtn = document.getElementById('btn-login-submit');
+    const loginSpinner = document.getElementById('login-spinner');
+    const loginBtnText = document.getElementById('login-btn-text');
+    const loginArrow = document.getElementById('login-arrow');
+
+    if (loginForm && loginSubmitBtn) {
+        const resetLoginButton = () => {
+            loginSubmitBtn.disabled = false;
+            loginSpinner?.classList.add('hidden');
+            loginArrow?.classList.remove('hidden');
+            if (loginBtnText) loginBtnText.textContent = 'Masuk';
+        };
+
+        loginForm.addEventListener('submit', (event) => {
+            if (loginSubmitBtn.disabled) {
+                event.preventDefault();
+                return;
+            }
+            if (!loginForm.checkValidity()) return;
+
+            loginSubmitBtn.disabled = true;
+            loginSpinner?.classList.remove('hidden');
+            loginArrow?.classList.add('hidden');
+            if (loginBtnText) loginBtnText.textContent = 'Memproses...';
+        });
+
+        window.addEventListener('pageshow', resetLoginButton);
+    }
 
     // 4. Konfirmasi Hapus Global (SweetAlert2 Lokal via NPM)
     document.querySelectorAll('form[data-confirm-delete]').forEach((form) => {
@@ -855,5 +888,494 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             console.error('Gagal merender grafik rata-rata pertanyaan:', err);
         }
+    }
+
+    // 7. Konfirmasi Logout Portal Mahasiswa (SweetAlert2 Lokal via NPM)
+    document.querySelectorAll('form[data-confirm-logout]').forEach((form) => {
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Keluar dari Portal Mahasiswa?',
+                text: 'Sesi login Anda akan diakhiri. Anda dapat masuk kembali kapan saja menggunakan NIM dan password Anda.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#2563EB',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Keluar',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    // 8. Dashboard Portal Mahasiswa (Tema Biru Modern): Animasi Progress + KPI Clickable + Filter Instan
+    const mhsDashboardRoot = document.getElementById('mahasiswa-dashboard-root');
+    if (mhsDashboardRoot) {
+        const circularEl = document.getElementById('mhs-circular-progress');
+        const linearEl = document.getElementById('mhs-linear-progress');
+        const circumference = 2 * Math.PI * 42;
+
+        window.requestAnimationFrame(() => {
+            if (circularEl) {
+                const targetPct = Math.min(100, Math.max(0, Number(circularEl.dataset.targetPercent || 0)));
+                const offset = circumference - (targetPct / 100) * circumference;
+                circularEl.style.strokeDashoffset = String(offset.toFixed(2));
+            }
+            if (linearEl) {
+                const targetWidth = Math.min(100, Math.max(0, Number(linearEl.dataset.targetWidth || 0)));
+                linearEl.style.width = `${targetWidth}%`;
+            }
+        });
+
+        const mhsKtSection = document.getElementById('mahasiswa-ketuntasan-section');
+        const kpiCards = Array.from(mhsDashboardRoot.querySelectorAll('.mhs-kpi-card'));
+        const items = Array.from(mhsDashboardRoot.querySelectorAll('.mhs-kt-item'));
+        const statusTabs = Array.from(mhsDashboardRoot.querySelectorAll('.mhs-status-tab'));
+        const selectType = document.getElementById('mhs-filter-type');
+        const searchInput = document.getElementById('mhs-search-quisioner');
+        const emptyBox = document.getElementById('mhs-kt-empty-filter');
+        const emptyTitle = document.getElementById('mhs-empty-title');
+        const emptyDesc = document.getElementById('mhs-empty-desc');
+        const resetFilterBtn = document.getElementById('mhs-reset-filter-btn');
+        const visibleCounterEl = document.getElementById('mhs-visible-counter');
+        const countAllEl = document.getElementById('mhs-count-all');
+        const countBelumEl = document.getElementById('mhs-count-belum');
+        const countTuntasEl = document.getElementById('mhs-count-tuntas');
+
+        let activeStatus = '';
+
+        const updateKpiCardStyles = () => {
+            kpiCards.forEach((card) => {
+                const val = card.dataset.kpiFilter ?? '';
+                const isActive = val === activeStatus;
+                card.setAttribute('aria-pressed', String(isActive));
+
+                card.classList.remove(
+                    'border-2',
+                    'border-[#2563EB]',
+                    'border-emerald-500',
+                    'border-amber-500',
+                    'ring-2',
+                    'ring-[#2563EB]/15',
+                    'ring-emerald-400/20',
+                    'ring-amber-400/25',
+                    'border',
+                    'border-blue-100',
+                    'border-amber-200/80'
+                );
+
+                if (isActive) {
+                    if (val === '0') {
+                        card.classList.add('border-2', 'border-amber-500', 'ring-2', 'ring-amber-400/25');
+                    } else if (val === '1') {
+                        card.classList.add('border-2', 'border-emerald-500', 'ring-2', 'ring-emerald-400/20');
+                    } else {
+                        card.classList.add('border-2', 'border-[#2563EB]', 'ring-2', 'ring-[#2563EB]/15');
+                    }
+                } else if (val === '0') {
+                    card.classList.add('border', 'border-amber-200/80');
+                } else {
+                    card.classList.add('border', 'border-blue-100');
+                }
+            });
+        };
+
+        const updateTabStyles = () => {
+            statusTabs.forEach((btn) => {
+                const val = btn.dataset.mhsStatus ?? '';
+                const isActive = val === activeStatus;
+                const badge = btn.querySelector('span[id^="mhs-count-"]');
+                btn.setAttribute('aria-pressed', String(isActive));
+
+                if (val === '') {
+                    btn.className = isActive
+                        ? 'mhs-status-tab inline-flex items-center gap-1.5 rounded-full bg-[#0F294A] px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs transition'
+                        : 'mhs-status-tab inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-[#0F294A] transition hover:bg-blue-50';
+                    if (badge) {
+                        badge.className = isActive
+                            ? 'rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-bold text-white tabular-nums'
+                            : 'rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-bold text-[#1E3A8A] tabular-nums';
+                    }
+                } else if (val === '1') {
+                    btn.className = isActive
+                        ? 'mhs-status-tab inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs transition'
+                        : 'mhs-status-tab inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-50';
+                    if (badge) {
+                        badge.className = isActive
+                            ? 'rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-bold text-white tabular-nums'
+                            : 'rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-700 tabular-nums';
+                    }
+                } else {
+                    btn.className = isActive
+                        ? 'mhs-status-tab inline-flex items-center gap-1.5 rounded-full bg-amber-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs transition'
+                        : 'mhs-status-tab inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-50';
+                    if (badge) {
+                        badge.className = isActive
+                            ? 'rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-bold text-white tabular-nums'
+                            : 'rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700 tabular-nums';
+                    }
+                }
+            });
+        };
+
+        const applyFilters = () => {
+            const typeVal = (selectType?.value || '').toLowerCase();
+            const keyword = (searchInput?.value || '').trim().toLowerCase();
+
+            let baseTotal = 0;
+            let baseTuntas = 0;
+            let baseBelum = 0;
+            let visibleCount = 0;
+
+            items.forEach((card) => {
+                const itemStatus = card.dataset.status || '0';
+                const itemType = card.dataset.type || '';
+                const itemSearch = card.dataset.search || '';
+
+                const matchBase =
+                    (typeVal === '' || itemType === typeVal) &&
+                    (keyword === '' || itemSearch.includes(keyword));
+
+                if (matchBase) {
+                    baseTotal += 1;
+                    if (itemStatus === '1') baseTuntas += 1;
+                    else baseBelum += 1;
+                }
+
+                const matchAll = matchBase && (activeStatus === '' || itemStatus === activeStatus);
+                card.classList.toggle('hidden', !matchAll);
+                if (matchAll) visibleCount += 1;
+            });
+
+            if (countAllEl) countAllEl.textContent = formatNumber(baseTotal);
+            if (countTuntasEl) countTuntasEl.textContent = formatNumber(baseTuntas);
+            if (countBelumEl) countBelumEl.textContent = formatNumber(baseBelum);
+            if (visibleCounterEl) visibleCounterEl.textContent = `Menampilkan ${formatNumber(visibleCount)} item`;
+
+            if (emptyBox && items.length > 0) {
+                const showEmpty = visibleCount === 0;
+                emptyBox.classList.toggle('hidden', !showEmpty);
+                emptyBox.classList.toggle('flex', showEmpty);
+
+                if (showEmpty && emptyTitle && emptyDesc) {
+                    if (activeStatus === '0' && keyword === '' && typeVal === '' && baseBelum === 0) {
+                        emptyTitle.textContent = 'Tidak ada tanggungan quisioner yang tersisa!';
+                        emptyDesc.textContent = 'Semua kuisioner dan EDOM Anda sudah selesai diisi dengan status Tuntas.';
+                    } else {
+                        emptyTitle.textContent = 'Tidak ada quisioner yang sesuai filter';
+                        emptyDesc.textContent = 'Coba ubah kata kunci pencarian, tipe quisioner, atau tab status untuk melihat daftar lainnya.';
+                    }
+                }
+            }
+        };
+
+        const setStatusFilter = (nextStatus, scrollToPanel = false) => {
+            activeStatus = nextStatus;
+            updateKpiCardStyles();
+            updateTabStyles();
+            applyFilters();
+
+            if (scrollToPanel && mhsKtSection) {
+                mhsKtSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        };
+
+        kpiCards.forEach((card) => {
+            card.addEventListener('click', () => {
+                setStatusFilter(card.dataset.kpiFilter ?? '', true);
+            });
+        });
+
+        statusTabs.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                setStatusFilter(btn.dataset.mhsStatus ?? '', false);
+            });
+        });
+
+        selectType?.addEventListener('change', applyFilters);
+        searchInput?.addEventListener('input', applyFilters);
+
+        resetFilterBtn?.addEventListener('click', () => {
+            if (selectType) selectType.value = '';
+            if (searchInput) searchInput.value = '';
+            setStatusFilter('', false);
+        });
+
+        updateKpiCardStyles();
+        updateTabStyles();
+    }
+
+    // 9. Form Pengisian Quisioner Mahasiswa: Sticky Progress Tracker + Validasi Visual + SweetAlert2
+    const mhsQuisionerForm = document.getElementById('mahasiswa-quisioner-form');
+    if (mhsQuisionerForm) {
+        const questionCards = Array.from(mhsQuisionerForm.querySelectorAll('.mhs-question-card'));
+        const totalQuestions = questionCards.length;
+        const progressTextEl = document.getElementById('mhs-form-progress-text');
+        const progressBarEl = document.getElementById('mhs-form-progress-bar');
+        const remainingBadgeEl = document.getElementById('mhs-form-remaining-badge');
+
+        const isCardAnswered = (card) => {
+            if (card.dataset.questionType === 'pilihan') {
+                return Boolean(card.querySelector('input[type="radio"]:checked'));
+            }
+            const textarea = card.querySelector('textarea');
+            return Boolean(textarea && textarea.value.trim().length > 0);
+        };
+
+        const setCardErrorState = (card, hasError) => {
+            const badge = card.querySelector('.mhs-unanswered-badge');
+            card.classList.toggle('bg-rose-50/50', hasError);
+            card.classList.toggle('ring-2', hasError);
+            card.classList.toggle('ring-inset', hasError);
+            card.classList.toggle('ring-rose-400', hasError);
+            if (badge) {
+                badge.classList.toggle('hidden', !hasError);
+                badge.classList.toggle('inline-flex', hasError);
+            }
+        };
+
+        const updateFormProgress = () => {
+            let answered = 0;
+            questionCards.forEach((card) => {
+                const ok = isCardAnswered(card);
+                if (ok) {
+                    answered += 1;
+                    setCardErrorState(card, false);
+                }
+            });
+
+            const pct = totalQuestions > 0 ? Math.round((answered / totalQuestions) * 100) : 0;
+            const remaining = Math.max(0, totalQuestions - answered);
+
+            if (progressTextEl) {
+                progressTextEl.textContent = `${answered} dari ${totalQuestions} Pertanyaan Terjawab — ${pct}%`;
+            }
+            if (progressBarEl) {
+                progressBarEl.style.width = `${pct}%`;
+            }
+            if (remainingBadgeEl) {
+                if (remaining === 0 && totalQuestions > 0) {
+                    remainingBadgeEl.textContent = 'Semua soal terjawab';
+                    remainingBadgeEl.className = 'inline-flex rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800';
+                } else {
+                    remainingBadgeEl.textContent = `Tersisa ${remaining} soal`;
+                    remainingBadgeEl.className = 'inline-flex rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-800 tabular-nums';
+                }
+            }
+        };
+
+        questionCards.forEach((card) => {
+            card.querySelectorAll('input[type="radio"]').forEach((radio) => {
+                radio.addEventListener('change', updateFormProgress);
+            });
+
+            const textarea = card.querySelector('.mhs-answer-textarea');
+            const counter = card.querySelector('.mhs-char-count');
+            if (textarea) {
+                const syncCharCount = () => {
+                    if (counter) {
+                        counter.textContent = `${formatNumber(textarea.value.length)} / 2.000 karakter`;
+                    }
+                    updateFormProgress();
+                };
+                textarea.addEventListener('input', syncCharCount);
+            }
+        });
+
+        updateFormProgress();
+
+        mhsQuisionerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const unansweredCards = questionCards.filter((card) => !isCardAnswered(card));
+            if (unansweredCards.length > 0) {
+                unansweredCards.forEach((card) => setCardErrorState(card, true));
+
+                const firstMissing = unansweredCards[0];
+                firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                await Swal.fire({
+                    title: 'Jawaban Belum Lengkap',
+                    text: `Masih ada ${unansweredCards.length} pertanyaan yang belum terjawab. Silakan lengkapi pertanyaan yang disorot merah.`,
+                    icon: 'warning',
+                    confirmButtonColor: '#2563EB',
+                    confirmButtonText: 'Lengkapi Sekarang',
+                });
+                return;
+            }
+
+            const title = mhsQuisionerForm.dataset.quisionerTitle || 'Quisioner ini';
+            const confirmResult = await Swal.fire({
+                title: 'Kirim Jawaban Sekarang?',
+                text: `Seluruh ${totalQuestions} jawaban pada "${title}" akan disimpan dan tidak dapat diubah setelah dikirim.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#2563EB',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Kirim Jawaban',
+                cancelButtonText: 'Periksa Kembali',
+                reverseButtons: true,
+            });
+
+            if (confirmResult.isConfirmed) {
+                mhsQuisionerForm.submit();
+            }
+        });
+    }
+
+    // 10. Toggle Panel Filter Lanjutan & Auto-Submit Per-Page (Halaman Monitoring Ketuntasan Admin)
+    document.querySelectorAll('select[data-auto-submit]').forEach((selectEl) => {
+        selectEl.addEventListener('change', () => {
+            selectEl.closest('form')?.submit();
+        });
+    });
+
+    const toggleAdvancedBtn = document.getElementById('btn-toggle-advanced-filter');
+    const advancedPanel = document.getElementById('panel-advanced-filter');
+    const advancedChevron = document.getElementById('icon-advanced-chevron');
+    if (toggleAdvancedBtn && advancedPanel) {
+        toggleAdvancedBtn.addEventListener('click', () => {
+            const isHidden = advancedPanel.classList.toggle('hidden');
+            toggleAdvancedBtn.setAttribute('aria-expanded', String(!isHidden));
+            advancedChevron?.classList.toggle('rotate-180', !isHidden);
+        });
+    }
+
+    // 11. Halaman Detail Rekap Mahasiswa: Tab Per-Quisioner, Filter Cepat, Lihat Jawaban & Cetak Detail
+    const detailRoot = document.getElementById('admin-ketuntasan-detail-root');
+    if (detailRoot) {
+        detailRoot.querySelectorAll('[data-print-detail]').forEach((btn) => {
+            btn.addEventListener('click', () => window.print());
+        });
+
+        const rincianSection = document.getElementById('rincian-jawaban-section');
+        const tabButtons = Array.from(detailRoot.querySelectorAll('.ans-quisioner-tab'));
+        const summaryGroups = Array.from(detailRoot.querySelectorAll('.ans-kategori-summary-group'));
+        const tipeButtons = Array.from(detailRoot.querySelectorAll('.ans-tipe-btn'));
+        const kategoriSelect = document.getElementById('ans-filter-kategori');
+        const rows = Array.from(detailRoot.querySelectorAll('.ans-row'));
+        const emptyFilterRow = document.getElementById('ans-empty-filter-row');
+        const visibleCounter = document.getElementById('ans-visible-counter');
+
+        let activeTab = 'all';
+        let activeTipe = '';
+
+        const syncKategoriOptions = (tabBtn) => {
+            if (!kategoriSelect || !tabBtn) return;
+            let cats = [];
+            try {
+                cats = JSON.parse(tabBtn.dataset.ansCategories || '[]');
+            } catch {
+                cats = [];
+            }
+            const currentVal = kategoriSelect.value;
+            kategoriSelect.innerHTML = '<option value="">Semua Kategori</option>';
+            cats.forEach((cat) => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                kategoriSelect.appendChild(opt);
+            });
+            kategoriSelect.value = cats.includes(currentVal) ? currentVal : '';
+        };
+
+        const updateTabUi = () => {
+            tabButtons.forEach((btn) => {
+                const isActive = (btn.dataset.ansTab || 'all') === activeTab;
+                const badge = btn.querySelector('.ans-tab-count');
+                btn.setAttribute('aria-pressed', String(isActive));
+                btn.className = isActive
+                    ? 'ans-quisioner-tab inline-flex items-center gap-1.5 rounded-full bg-[#062419] px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs transition'
+                    : 'ans-quisioner-tab inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-[#062419] transition hover:bg-emerald-50';
+                if (badge) {
+                    badge.className = isActive
+                        ? 'ans-tab-count rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-bold text-white tabular-nums'
+                        : 'ans-tab-count rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-[#0B6B3A] tabular-nums';
+                }
+            });
+
+            summaryGroups.forEach((grp) => {
+                grp.classList.toggle('hidden', (grp.dataset.summaryTab || 'all') !== activeTab);
+            });
+        };
+
+        const updateTipeUi = () => {
+            tipeButtons.forEach((btn) => {
+                const isActive = (btn.dataset.ansTipe ?? '') === activeTipe;
+                btn.className = isActive
+                    ? 'ans-tipe-btn rounded-full bg-[#20A464] px-3 py-1 text-xs font-semibold text-white transition'
+                    : 'ans-tipe-btn rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 transition hover:bg-emerald-50';
+            });
+        };
+
+        const applyDetailFilters = () => {
+            const katVal = kategoriSelect?.value || '';
+            let tabTotal = 0;
+            let visible = 0;
+
+            rows.forEach((row) => {
+                const matchTab = activeTab === 'all' || (row.dataset.quisionerId || '') === activeTab;
+                if (matchTab) tabTotal += 1;
+
+                const matchKat = katVal === '' || (row.dataset.kategori || '') === katVal;
+                const matchTipe = activeTipe === '' || (row.dataset.tipe || '') === activeTipe;
+                const show = matchTab && matchKat && matchTipe;
+
+                row.classList.toggle('hidden', !show);
+                if (show) {
+                    visible += 1;
+                    const noEl = row.querySelector('.ans-row-no');
+                    if (noEl) noEl.textContent = String(visible);
+                }
+            });
+
+            if (visibleCounter) {
+                visibleCounter.textContent = `Menampilkan ${formatNumber(visible)} dari ${formatNumber(tabTotal)} jawaban`;
+            }
+            if (emptyFilterRow && rows.length > 0) {
+                emptyFilterRow.classList.toggle('hidden', visible > 0);
+            }
+        };
+
+        const activateTab = (tabKey) => {
+            const targetBtn = tabButtons.find((b) => (b.dataset.ansTab || 'all') === tabKey);
+            if (!targetBtn) return;
+            activeTab = tabKey;
+            syncKategoriOptions(targetBtn);
+            updateTabUi();
+            applyDetailFilters();
+        };
+
+        tabButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                activateTab(btn.dataset.ansTab || 'all');
+            });
+        });
+
+        tipeButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                activeTipe = btn.dataset.ansTipe ?? '';
+                updateTipeUi();
+                applyDetailFilters();
+            });
+        });
+
+        kategoriSelect?.addEventListener('change', applyDetailFilters);
+
+        // Tombol "Lihat Jawaban" pada tabel Rekap Per-Quisioner -> auto-select tab & smooth scroll
+        detailRoot.querySelectorAll('[data-jump-quisioner]').forEach((jumpBtn) => {
+            jumpBtn.addEventListener('click', () => {
+                const qId = jumpBtn.dataset.jumpQuisioner || 'all';
+                if (kategoriSelect) kategoriSelect.value = '';
+                activeTipe = '';
+                updateTipeUi();
+                activateTab(qId);
+                rincianSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
     }
 });

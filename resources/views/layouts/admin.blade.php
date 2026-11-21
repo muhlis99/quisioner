@@ -25,16 +25,22 @@
         {{-- Sidebar Admin (#062419 Dark Emerald) --}}
         <aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col bg-gradient-to-b from-[#062419] via-[#062419] to-[#083523] text-white shadow-2xl transition-transform duration-200 ease-out lg:static lg:translate-x-0 lg:shadow-none print:hidden">
             {{-- Header Logo & Nama Aplikasi --}}
-            <div class="flex h-16 items-center justify-between border-b border-[#0B6B3A]/60 px-5">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0B6B3A] text-[#20A464] ring-1 ring-[#20A464]/50 shadow-sm">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
-                        </svg>
+            <div class="flex h-18 items-center justify-between border-b border-[#0B6B3A]/60 px-5">
+                <a
+                    href="{{ route('admin.dashboard') }}"
+                    title="Sistem Kuisioner / STAINAA — STAI Nurul Abror Al-Robbaniyin"
+                    class="group flex min-w-0 items-center gap-3"
+                >
+                    <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 p-1 ring-2 ring-emerald-400/30 shadow-sm transition duration-300 group-hover:scale-105 group-hover:ring-amber-300/60 group-hover:shadow-[0_0_18px_rgba(32,164,100,0.55)]">
+                        <img
+                            src="{{ asset('assets/img/logo-stainaa.png') }}"
+                            alt="Logo STAI Nurul Abror Al-Robbaniyin"
+                            class="h-full w-full rounded-full object-contain transition-transform duration-300"
+                        >
                     </div>
-                    <div class="min-w-0">
-                        <p class="truncate text-sm font-bold tracking-tight text-white">{{ config('app.name', 'Sistem Kuisioner') }}</p>
-                        <p class="text-[11px] font-medium text-[#20A464]">Panel Admin &amp; EDOM</p>
+                    <div class="min-w-0 transition-opacity duration-200">
+                        <p class="truncate text-sm font-bold tracking-tight text-white transition group-hover:text-emerald-100">Sistem Kuisioner / STAINAA</p>
+                        <p class="truncate text-[11px] font-medium text-[#20A464]">Panel Admin &amp; EDOM</p>
                     </div>
                 </a>
                 <button id="mobile-sidebar-close" type="button" class="rounded-lg p-1.5 text-white/70 hover:bg-white/10 hover:text-white lg:hidden" aria-label="Tutup menu">
@@ -147,16 +153,23 @@
         <div class="flex min-h-screen flex-1 flex-col">
             {{-- Top Navbar Putih Bersih --}}
             <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-emerald-100 bg-white/95 px-4 shadow-2xs backdrop-blur-xs sm:px-6 lg:px-8 print:hidden">
-                <div class="flex items-center gap-3">
+                <div class="flex min-w-0 items-center gap-2.5 sm:gap-3">
                     <button id="mobile-sidebar-open" type="button" class="rounded-xl border border-emerald-100 bg-[#F4F7F5] p-2 text-[#062419] transition hover:bg-emerald-50 lg:hidden" aria-label="Buka menu navigasi">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                     </button>
-                    <div>
-                        <h1 class="text-base font-bold tracking-tight text-[#062419] sm:text-lg">@yield('page-title', 'Dashboard Admin')</h1>
+                    <a href="{{ route('admin.dashboard') }}" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 p-0.5 ring-1 ring-emerald-200 transition hover:scale-105 lg:hidden" title="STAI Nurul Abror Al-Robbaniyin">
+                        <img
+                            src="{{ asset('assets/img/logo-stainaa.png') }}"
+                            alt="Logo STAINAA"
+                            class="h-full w-full rounded-full object-contain"
+                        >
+                    </a>
+                    <div class="min-w-0">
+                        <h1 class="truncate text-base font-bold tracking-tight text-[#062419] sm:text-lg">@yield('page-title', 'Dashboard Admin')</h1>
                         @hasSection('page-subtitle')
-                            <p class="hidden text-xs text-slate-500 sm:block">@yield('page-subtitle')</p>
+                            <p class="hidden truncate text-xs text-slate-500 sm:block">@yield('page-subtitle')</p>
                         @endif
                     </div>
                 </div>
@@ -224,7 +237,7 @@
 
             {{-- Footer --}}
             <footer class="border-t border-emerald-100 bg-white px-4 py-3.5 text-center text-xs text-slate-500 sm:px-6 lg:px-8 print:hidden">
-                &copy; {{ date('Y') }} {{ config('app.name', 'Sistem Kuisioner') }} &mdash; Panel Administrator.
+                &copy; {{ date('Y') }} STAI Nurul Abror Al-Robbaniyin &mdash; Panel Administrator Sistem Kuisioner &amp; EDOM.
             </footer>
         </div>
     </div>
