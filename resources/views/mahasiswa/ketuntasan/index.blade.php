@@ -29,17 +29,17 @@
         {{-- Filter --}}
         <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5">
             <form method="GET" action="{{ route('mahasiswa.ketuntasan.index') }}" class="flex flex-wrap items-center gap-3">
-                <select name="semester" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none">
+                <select name="semester" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-[#20A464] focus:outline-none">
                     <option value="">Semua Semester</option>
                     <option value="ganjil" @selected($semester === 'ganjil')>Ganjil</option>
                     <option value="genap" @selected($semester === 'genap')>Genap</option>
                 </select>
-                <select name="ketuntasan" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none">
+                <select name="ketuntasan" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-[#20A464] focus:outline-none">
                     <option value="">Semua Status</option>
                     <option value="1" @selected($status === '1')>Sudah Tuntas</option>
                     <option value="0" @selected($status === '0')>Belum Tuntas</option>
                 </select>
-                <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700">
+                <button type="submit" class="rounded-xl bg-[#0B6B3A] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#20A464]">
                     Filter
                 </button>
                 @if ($semester !== '' || $status !== '')
@@ -80,7 +80,7 @@
                                     <span class="block capitalize text-slate-500">Semester {{ $q->semester }}</span>
                                 </td>
                                 <td class="px-4 py-3.5 text-center">
-                                    <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase {{ $q->type === 'edom' ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' : 'bg-teal-50 text-teal-700 ring-1 ring-teal-200' }}">
+                                    <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase {{ $q->type === 'edom' ? 'bg-[#E9F7F0] text-[#0B6B3A] ring-1 ring-[#20A464]/40' : 'bg-teal-50 text-teal-700 ring-1 ring-teal-200' }}">
                                         {{ $q->type }}
                                     </span>
                                 </td>
@@ -109,7 +109,7 @@
                                     @if ($row['is_tuntas'])
                                         <span class="text-xs font-medium text-emerald-600">Selesai</span>
                                     @else
-                                        <a href="{{ route('mahasiswa.quisioner.index', ['type' => $q->type]) }}" class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700">
+                                        <a href="{{ route('mahasiswa.quisioner.index', ['type' => $q->type]) }}" class="inline-flex items-center gap-1 rounded-lg bg-[#0B6B3A] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#20A464]">
                                             <span>Lanjutkan</span>
                                             <span>&rarr;</span>
                                         </a>

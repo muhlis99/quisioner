@@ -15,11 +15,11 @@
                         name="search"
                         value="{{ $search }}"
                         placeholder="Cari kode, nama mata kuliah, atau nama dosen..."
-                        class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none"
+                        class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                     >
                 </div>
                 <div class="md:col-span-2">
-                    <select name="tahun_ajaran" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none">
+                    <select name="tahun_ajaran" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-[#20A464] focus:outline-none">
                         <option value="">Semua TA</option>
                         @foreach ($tahunAjaranList as $ta)
                             <option value="{{ $ta }}" @selected($tahunAjaran === $ta)>{{ $ta }}</option>
@@ -27,14 +27,14 @@
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <select name="semester" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none">
+                    <select name="semester" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus:border-[#20A464] focus:outline-none">
                         <option value="">Semua Semester</option>
                         <option value="ganjil" @selected($semester === 'ganjil')>Ganjil</option>
                         <option value="genap" @selected($semester === 'genap')>Genap</option>
                     </select>
                 </div>
                 <div class="flex items-center justify-between gap-2 md:col-span-3 md:justify-end">
-                    <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700">
+                    <button type="submit" class="rounded-xl bg-[#0B6B3A] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#20A464]">
                         Filter
                     </button>
                     @if ($search !== '' || $tahunAjaran !== '' || $semester !== '')
@@ -101,7 +101,7 @@
                                     @if ($edomInfo['sudah_diisi'])
                                         <span class="text-xs font-medium text-slate-400">Selesai</span>
                                     @elseif ($edomQ && $edomQ->pertanyaan_count > 0)
-                                        <a href="{{ route('mahasiswa.quisioner.show', [$edomQ, 'makul' => $item->id]) }}" class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700">
+                                        <a href="{{ route('mahasiswa.quisioner.show', [$edomQ, 'makul' => $item->id]) }}" class="inline-flex items-center gap-1 rounded-lg bg-[#0B6B3A] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#20A464]">
                                             <span>Isi EDOM</span>
                                             <span>&rarr;</span>
                                         </a>

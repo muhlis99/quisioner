@@ -34,12 +34,15 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:admin'])
     ->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/chart-data', [AdminDashboardController::class, 'getChartData'])->name('dashboard.chart-data');
 
         // 1. Menu Mahasiswa (Integrasi SIAKAD)
         Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
+        Route::post('/mahasiswa/sync', [MahasiswaController::class, 'sync'])->name('mahasiswa.sync');
 
         // 2. Menu Dosen (Integrasi SIAKAD)
         Route::get('/dosen', [DosenController::class, 'index'])->name('dosen.index');
+        Route::post('/dosen/sync', [DosenController::class, 'sync'])->name('dosen.sync');
 
         // 3. Menu Skor Jawaban
         Route::resource('skor', SkorController::class)->except(['show']);
@@ -70,7 +73,10 @@ Route::prefix('admin')
         Route::get('/ketuntasan', [KetuntasanController::class, 'index'])->name('ketuntasan.index');
         Route::delete('/ketuntasan/{ketuntasan}', [KetuntasanController::class, 'destroy'])->name('ketuntasan.destroy');
 
-        // 8. Menu Kelola Pengguna (tb_users)
+        // 8. Menu Kelola Pengguna (tb_users: Tab Non-Mahasiswa & Tab Mahasiswa + Generate Massal & Reset Password)
+        Route::post('/users/generate-mahasiswa', [UserController::class, 'generateMahasiswaAccounts'])->name('users.generate-mahasiswa');
+        Route::post('/users/reset-password-mahasiswa-massal', [UserController::class, 'resetPasswordMahasiswaMassal'])->name('users.reset-mahasiswa-massal');
+        Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
         Route::resource('users', UserController::class)->except(['show']);
     });
 

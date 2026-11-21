@@ -15,7 +15,7 @@
         {{-- Ringkasan Identitas Quisioner & Target Evaluasi --}}
         <div class="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 shadow-xs">
             <div class="flex flex-wrap items-center gap-2">
-                <span class="rounded-full bg-emerald-600 px-3 py-0.5 text-xs font-semibold uppercase text-white">
+                <span class="rounded-full bg-[#0B6B3A] px-3 py-0.5 text-xs font-semibold uppercase text-white">
                     {{ $quisioner->type === 'edom' ? 'EDOM' : 'Kuisioner Umum' }}
                 </span>
                 <span class="rounded-full bg-white px-3 py-0.5 text-xs font-semibold capitalize text-slate-700 ring-1 ring-slate-200">
@@ -134,7 +134,7 @@
                                                     rows="3"
                                                     required
                                                     placeholder="Tuliskan jawaban atau masukan Anda di sini..."
-                                                    class="block w-full rounded-xl border @error($errorKey) border-rose-400 @else border-slate-300 @enderror px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none"
+                                                    class="block w-full rounded-xl border @error($errorKey) border-rose-400 @else border-slate-300 @enderror px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                                                 >{{ $oldVal }}</textarea>
                                             </div>
                                         @endif
@@ -161,7 +161,7 @@
                     </a>
                     <button
                         type="submit"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-emerald-700"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0B6B3A] px-6 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-[#20A464]"
                     >
                         <span>Kirim Jawaban</span>
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

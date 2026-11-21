@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dosen;
+use App\Services\SiakadSyncService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Throwable;
 
 class DosenController extends Controller
 {
@@ -32,5 +36,52 @@ class DosenController extends Controller
             'perPage' => $perPage,
             'totalSemua' => Dosen::count(),
         ]);
+    }
+
+    /**
+     * Menjalankan sinkronisasi data dosen dari API SIAKAD ke tb_dosen.
+     * Mendukung respon JSON (AJAX/Fetch + SweetAlert2) maupun redirect standar.
+     */
+    public function sync(Request $request, SiakadSyncService $syncService): JsonResponse|RedirectResponse
+    {
+        try {
+            $result = $syncService->syncDosen();
+            $totalDb = Dosen::count();
+
+            $pesan = sprintf(
+                'Sinkronisasi Dosen SIAKAD selesai: %d data dari API (%d berhasil diproses: %d baru, %d diperbarui, %d mutakhir%s).',
+                $result['total_api'],
+                $result['processed'],
+                $result['inserted'],
+                $result['updated'],
+                $result['unchanged'],
+                $result['skipped'] > 0 ? ", {$result['skipped']} dilewati" : ''
+            );
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $pesan,
+                    'data' => array_merge($result, ['total_db' => $totalDb]),
+                ]);
+            }
+
+            return redirect()
+                ->route('admin.dosen.index')
+                ->with('success', $pesan);
+        } catch (Throwable $e) {
+            $errorMsg = 'Sinkronisasi Dosen SIAKAD gagal: ' . $e->getMessage();
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $errorMsg,
+                ], 502);
+            }
+
+            return redirect()
+                ->route('admin.dosen.index')
+                ->with('error', $errorMsg);
+        }
     }
 }

@@ -5,8 +5,13 @@
 @section('page-subtitle', 'Hubungkan mahasiswa dengan mata kuliah dan dosen pengampu untuk pengisian EDOM')
 
 @section('content')
-    <div class="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
-        <form method="POST" action="{{ route('admin.jatah-makul.store') }}" class="space-y-5">
+    <div class="mx-auto max-w-3xl overflow-hidden rounded-xl border border-emerald-100 bg-white shadow-sm">
+        <div class="border-b border-emerald-100 bg-emerald-50/60 px-6 py-4">
+            <h2 class="text-sm font-bold text-[#062419]">Formulir Jatah Mata Kuliah Baru</h2>
+            <p class="mt-0.5 text-xs text-slate-500">Pilih mahasiswa, periode akademik, mata kuliah, dan dosen pengampu.</p>
+        </div>
+
+        <form method="POST" action="{{ route('admin.jatah-makul.store') }}" class="space-y-5 p-6 sm:p-8">
             @csrf
 
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -20,7 +25,7 @@
                         value="{{ old('nim') }}"
                         required
                         placeholder="Pilih atau ketik NIM mahasiswa"
-                        class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                        class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                     >
                     <datalist id="list-mahasiswa">
                         @foreach ($mahasiswas as $m)
@@ -28,7 +33,7 @@
                         @endforeach
                     </datalist>
                     @error('nim')
-                        <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                        <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -42,10 +47,10 @@
                             value="{{ old('tahun_ajaran', date('Y') . '/' . (date('Y') + 1)) }}"
                             required
                             placeholder="2025/2026"
-                            class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                            class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                         >
                         @error('tahun_ajaran')
-                            <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                            <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -55,14 +60,14 @@
                             id="semester"
                             name="semester"
                             required
-                            class="mt-1.5 block w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                            class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                         >
                             <option value="">-- Pilih --</option>
                             <option value="ganjil" @selected(old('semester') === 'ganjil')>Ganjil</option>
                             <option value="genap" @selected(old('semester') === 'genap')>Genap</option>
                         </select>
                         @error('semester')
-                            <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                            <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -78,10 +83,10 @@
                         value="{{ old('kode_makul') }}"
                         required
                         placeholder="Contoh: TI101"
-                        class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                        class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                     >
                     @error('kode_makul')
-                        <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                        <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -94,10 +99,10 @@
                         value="{{ old('nama_makul') }}"
                         required
                         placeholder="Contoh: Algoritma & Pemrograman"
-                        class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                        class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                     >
                     @error('nama_makul')
-                        <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                        <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
@@ -113,7 +118,7 @@
                         value="{{ old('nipy') }}"
                         required
                         placeholder="Pilih atau ketik NIPY dosen"
-                        class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                        class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                     >
                     <datalist id="list-dosen">
                         @foreach ($dosens as $d)
@@ -121,7 +126,7 @@
                         @endforeach
                     </datalist>
                     @error('nipy')
-                        <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                        <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -132,21 +137,21 @@
                         name="nama_dosen"
                         type="text"
                         value="{{ old('nama_dosen') }}"
-                        placeholder="Otomatis terisi dari tb_dosen jika NIPY cocok"
-                        class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                        placeholder="Otomatis terisi jika NIPY cocok"
+                        class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                     >
                     @error('nama_dosen')
-                        <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                        <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
 
-            <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
-                <a href="{{ route('admin.jatah-makul.index') }}" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
-                    Batal
+            <div class="flex items-center justify-between gap-3 border-t border-emerald-100 pt-5">
+                <a href="{{ route('admin.jatah-makul.index') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
+                    &larr; Kembali
                 </a>
-                <button type="submit" class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-indigo-700">
-                    Simpan Jatah Makul
+                <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-[#20A464] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#17804D]">
+                    <span>Simpan Jatah Makul</span>
                 </button>
             </div>
         </form>

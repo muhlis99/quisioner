@@ -7,7 +7,7 @@
 @section('content')
     <div class="space-y-6">
         {{-- Banner Sambutan --}}
-        <div class="flex flex-col justify-between gap-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 p-6 text-white shadow-sm sm:flex-row sm:items-center">
+        <div class="flex flex-col justify-between gap-4 rounded-2xl bg-gradient-to-r from-[#062419] via-[#0B6B3A] to-[#20A464] p-6 text-white shadow-sm sm:flex-row sm:items-center">
             <div>
                 <h2 class="text-lg font-bold sm:text-xl">Selamat Datang di Portal Kuisioner Mahasiswa</h2>
                 <p class="mt-1.5 max-w-2xl text-sm text-emerald-50">

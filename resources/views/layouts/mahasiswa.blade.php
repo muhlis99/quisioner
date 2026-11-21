@@ -3,37 +3,37 @@
 <head>
     @include('layouts.partials.head')
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class="bg-[#F4F8F5] text-slate-800 antialiased">
     @php
         $namaMahasiswa = session('mahasiswa_nama') ?? auth()->user()?->mahasiswa?->nama ?? auth()->user()?->username ?? 'Mahasiswa';
         $nimMahasiswa = session('mahasiswa_nim') ?? auth()->user()?->mahasiswa?->nim ?? auth()->user()?->username ?? '-';
         $inisialMahasiswa = strtoupper(mb_substr($namaMahasiswa, 0, 1));
 
         $linkClass = fn (bool $active): string => $active
-            ? 'flex items-center gap-3 rounded-xl bg-emerald-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition'
-            : 'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-emerald-50 hover:text-emerald-700';
+            ? 'flex items-center gap-3 rounded-xl bg-[#0B6B3A] px-3.5 py-2.5 text-sm font-semibold text-white ring-1 ring-[#20A464]/50 shadow-sm transition'
+            : 'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-[#E9F7F0] hover:text-[#0B6B3A]';
     @endphp
 
     <div class="min-h-screen lg:flex">
         {{-- Overlay Mobile --}}
-        <div id="sidebar-backdrop" class="fixed inset-0 z-40 hidden bg-slate-900/50 backdrop-blur-xs lg:hidden"></div>
+        <div id="sidebar-backdrop" class="fixed inset-0 z-40 hidden bg-[#062419]/60 backdrop-blur-xs lg:hidden"></div>
 
         {{-- Sidebar Mahasiswa --}}
-        <aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col border-r border-slate-200 bg-white shadow-xl transition-transform duration-200 ease-out lg:static lg:translate-x-0 lg:shadow-none">
+        <aside id="app-sidebar" class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col border-r border-emerald-900/10 bg-white shadow-xl transition-transform duration-200 ease-out lg:static lg:translate-x-0 lg:shadow-none">
             {{-- Brand --}}
-            <div class="flex h-16 items-center justify-between border-b border-slate-200 px-5">
+            <div class="flex h-16 items-center justify-between border-b border-emerald-900/10 bg-[#062419] px-5 text-white">
                 <a href="{{ route('mahasiswa.dashboard') }}" class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 font-bold text-white shadow-sm">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0B6B3A] font-bold text-[#20A464] ring-1 ring-[#20A464]/50 shadow-sm">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342" />
                         </svg>
                     </div>
                     <div>
-                        <p class="text-sm font-bold tracking-tight text-slate-900">Portal Mahasiswa</p>
-                        <p class="text-[11px] text-slate-500">Pengisian Kuisioner &amp; EDOM</p>
+                        <p class="text-sm font-bold tracking-tight text-white">Portal Mahasiswa</p>
+                        <p class="text-[11px] text-[#20A464]">Pengisian Kuisioner &amp; EDOM</p>
                     </div>
                 </a>
-                <button id="mobile-sidebar-close" type="button" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 lg:hidden" aria-label="Tutup menu">
+                <button id="mobile-sidebar-close" type="button" class="rounded-lg p-1.5 text-emerald-200/70 hover:bg-[#0B6B3A]/50 hover:text-white lg:hidden" aria-label="Tutup menu">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -42,13 +42,13 @@
 
             {{-- Kartu Identitas Singkat Mahasiswa --}}
             <div class="border-b border-slate-100 px-4 py-4">
-                <div class="flex items-center gap-3 rounded-2xl bg-emerald-50/70 p-3 ring-1 ring-emerald-100">
-                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-sm font-bold text-white">
+                <div class="flex items-center gap-3 rounded-2xl bg-[#E9F7F0] p-3 ring-1 ring-[#20A464]/30">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0B6B3A] text-sm font-bold text-white">
                         {{ $inisialMahasiswa }}
                     </div>
                     <div class="min-w-0">
-                        <p class="truncate text-sm font-semibold text-slate-900">{{ $namaMahasiswa }}</p>
-                        <p class="truncate text-xs text-emerald-700">{{ $nimMahasiswa }}</p>
+                        <p class="truncate text-sm font-semibold text-[#062419]">{{ $namaMahasiswa }}</p>
+                        <p class="truncate font-mono text-xs text-[#0B6B3A]">{{ $nimMahasiswa }}</p>
                     </div>
                 </div>
             </div>
@@ -94,13 +94,13 @@
                 <div>
                     <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Akademik &amp; Status</p>
                     <div class="space-y-1">
-                        <a href="{{ Route::has('mahasiswa.makul.index') ? route('mahasiswa.makul.index') : '#' }}" class="{{ $linkClass(request()->routeIs('mahasiswa.makul.*')) }}">
+                        <a href="{{ route('mahasiswa.makul.index') }}" class="{{ $linkClass(request()->routeIs('mahasiswa.makul.*')) }}">
                             <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                             </svg>
                             <span>Mata Kuliah Diambil</span>
                         </a>
-                        <a href="{{ Route::has('mahasiswa.ketuntasan.index') ? route('mahasiswa.ketuntasan.index') : '#' }}" class="{{ $linkClass(request()->routeIs('mahasiswa.ketuntasan.*')) }}">
+                        <a href="{{ route('mahasiswa.ketuntasan.index') }}" class="{{ $linkClass(request()->routeIs('mahasiswa.ketuntasan.*')) }}">
                             <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -127,15 +127,15 @@
         {{-- Area Konten Utama Mahasiswa --}}
         <div class="flex min-h-screen flex-1 flex-col">
             {{-- Navbar Atas --}}
-            <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur-xs sm:px-6 lg:px-8">
+            <header class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-emerald-900/10 bg-white/95 px-4 backdrop-blur-xs sm:px-6 lg:px-8">
                 <div class="flex items-center gap-3">
-                    <button id="mobile-sidebar-open" type="button" class="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Buka menu navigasi">
+                    <button id="mobile-sidebar-open" type="button" class="rounded-lg border border-slate-200 p-2 text-[#062419] hover:bg-[#E9F7F0] lg:hidden" aria-label="Buka menu navigasi">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                     </button>
                     <div>
-                        <h1 class="text-base font-bold text-slate-900 sm:text-lg">@yield('page-title', 'Beranda Mahasiswa')</h1>
+                        <h1 class="text-base font-bold text-[#062419] sm:text-lg">@yield('page-title', 'Beranda Mahasiswa')</h1>
                         @hasSection('page-subtitle')
                             <p class="hidden text-xs text-slate-500 sm:block">@yield('page-subtitle')</p>
                         @endif
@@ -143,20 +143,20 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <span class="hidden items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 md:inline-flex">
-                        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                    <span class="hidden items-center gap-1.5 rounded-full border border-[#20A464]/30 bg-[#E9F7F0] px-3 py-1 text-xs font-semibold text-[#0B6B3A] md:inline-flex">
+                        <span class="h-2 w-2 rounded-full bg-[#20A464]"></span>
                         Portal Mahasiswa
                     </span>
 
                     {{-- Dropdown Profil Mahasiswa --}}
                     <div class="relative">
-                        <button id="profile-menu-toggle" type="button" aria-expanded="false" class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-left transition hover:bg-slate-50">
-                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-xs font-bold text-white">
+                        <button id="profile-menu-toggle" type="button" aria-expanded="false" class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-left transition hover:border-[#20A464]/50 hover:bg-[#E9F7F0]/40">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0B6B3A] text-xs font-bold text-white">
                                 {{ $inisialMahasiswa }}
                             </div>
                             <div class="hidden sm:block">
-                                <p class="text-xs font-semibold text-slate-800">{{ $namaMahasiswa }}</p>
-                                <p class="text-[11px] text-slate-500">{{ $nimMahasiswa }}</p>
+                                <p class="text-xs font-semibold text-[#062419]">{{ $namaMahasiswa }}</p>
+                                <p class="font-mono text-[11px] text-slate-500">{{ $nimMahasiswa }}</p>
                             </div>
                             <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -165,10 +165,10 @@
 
                         <div id="profile-menu" class="absolute right-0 mt-2 hidden w-56 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg">
                             <div class="border-b border-slate-100 px-3 py-2 sm:hidden">
-                                <p class="text-xs font-semibold text-slate-800">{{ $namaMahasiswa }}</p>
-                                <p class="truncate text-[11px] text-slate-500">{{ $nimMahasiswa }}</p>
+                                <p class="text-xs font-semibold text-[#062419]">{{ $namaMahasiswa }}</p>
+                                <p class="truncate font-mono text-[11px] text-slate-500">{{ $nimMahasiswa }}</p>
                             </div>
-                            <a href="{{ route('mahasiswa.dashboard') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">
+                            <a href="{{ route('mahasiswa.dashboard') }}" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-[#E9F7F0] hover:text-[#0B6B3A]">
                                 Beranda Mahasiswa
                             </a>
                             @if (Route::has('logout'))
@@ -198,7 +198,7 @@
             </main>
 
             {{-- Footer --}}
-            <footer class="border-t border-slate-200 bg-white px-4 py-3.5 text-center text-xs text-slate-500 sm:px-6 lg:px-8">
+            <footer class="border-t border-emerald-900/10 bg-white px-4 py-3.5 text-center text-xs text-slate-500 sm:px-6 lg:px-8">
                 &copy; {{ date('Y') }} {{ config('app.name', 'Sistem Kuisioner') }} &mdash; Portal Mahasiswa.
             </footer>
         </div>

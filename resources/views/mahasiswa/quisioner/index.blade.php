@@ -8,13 +8,13 @@
     <div class="space-y-6">
         {{-- Filter Tab Tipe Quisioner --}}
         <div class="flex flex-wrap items-center gap-2">
-            <a href="{{ route('mahasiswa.quisioner.index') }}" class="rounded-xl px-4 py-2 text-sm font-semibold transition {{ $filterType === '' ? 'bg-emerald-600 text-white shadow-xs' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50' }}">
+            <a href="{{ route('mahasiswa.quisioner.index') }}" class="rounded-xl px-4 py-2 text-sm font-semibold transition {{ $filterType === '' ? 'bg-[#0B6B3A] text-white shadow-xs' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50' }}">
                 Semua Quisioner
             </a>
-            <a href="{{ route('mahasiswa.quisioner.index', ['type' => 'edom']) }}" class="rounded-xl px-4 py-2 text-sm font-semibold transition {{ $filterType === 'edom' ? 'bg-emerald-600 text-white shadow-xs' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50' }}">
+            <a href="{{ route('mahasiswa.quisioner.index', ['type' => 'edom']) }}" class="rounded-xl px-4 py-2 text-sm font-semibold transition {{ $filterType === 'edom' ? 'bg-[#0B6B3A] text-white shadow-xs' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50' }}">
                 Kuisioner EDOM
             </a>
-            <a href="{{ route('mahasiswa.quisioner.index', ['type' => 'biasa']) }}" class="rounded-xl px-4 py-2 text-sm font-semibold transition {{ $filterType === 'biasa' ? 'bg-emerald-600 text-white shadow-xs' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50' }}">
+            <a href="{{ route('mahasiswa.quisioner.index', ['type' => 'biasa']) }}" class="rounded-xl px-4 py-2 text-sm font-semibold transition {{ $filterType === 'biasa' ? 'bg-[#0B6B3A] text-white shadow-xs' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50' }}">
                 Kuisioner Umum
             </a>
         </div>
@@ -30,7 +30,7 @@
                 <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
                     <div class="space-y-2">
                         <div class="flex flex-wrap items-center gap-2">
-                            <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase {{ $q->type === 'edom' ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' : 'bg-teal-50 text-teal-700 ring-1 ring-teal-200' }}">
+                            <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase {{ $q->type === 'edom' ? 'bg-[#E9F7F0] text-[#0B6B3A] ring-1 ring-[#20A464]/40' : 'bg-teal-50 text-teal-700 ring-1 ring-teal-200' }}">
                                 {{ $q->type === 'edom' ? 'EDOM' : 'Kuisioner Umum' }}
                             </span>
                             <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold capitalize text-slate-700">
@@ -67,7 +67,7 @@
 
                             @if ($q->type === 'biasa')
                                 @if ($q->pertanyaan_count > 0)
-                                    <a href="{{ route('mahasiswa.quisioner.show', $q) }}" class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-xs transition hover:bg-emerald-700">
+                                    <a href="{{ route('mahasiswa.quisioner.show', $q) }}" class="inline-flex items-center gap-1.5 rounded-xl bg-[#0B6B3A] px-4 py-2 text-sm font-semibold text-white shadow-xs transition hover:bg-[#20A464]">
                                         <span>Isi Quisioner</span>
                                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -109,7 +109,7 @@
                                             @foreach ($entry['makul_items'] as $mItem)
                                                 @php $m = $mItem['makul']; @endphp
                                                 <tr class="hover:bg-slate-50/80">
-                                                    <td class="px-4 py-3 font-mono text-xs font-semibold text-indigo-700">{{ $m->kode_makul }}</td>
+                                                    <td class="px-4 py-3 font-mono text-xs font-semibold text-[#0B6B3A]">{{ $m->kode_makul }}</td>
                                                     <td class="px-4 py-3 font-medium text-slate-900">{{ $m->nama_makul }}</td>
                                                     <td class="px-4 py-3 text-slate-700">
                                                         {{ $m->nama_dosen }}
@@ -130,7 +130,7 @@
                                                         @if ($mItem['sudah_diisi'])
                                                             <span class="text-xs font-medium text-slate-400">Sudah terkirim</span>
                                                         @elseif ($q->pertanyaan_count > 0)
-                                                            <a href="{{ route('mahasiswa.quisioner.show', [$q, 'makul' => $m->id]) }}" class="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700">
+                                                            <a href="{{ route('mahasiswa.quisioner.show', [$q, 'makul' => $m->id]) }}" class="inline-flex items-center gap-1 rounded-lg bg-[#0B6B3A] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#20A464]">
                                                                 <span>Isi Quisioner</span>
                                                                 <span>&rarr;</span>
                                                             </a>

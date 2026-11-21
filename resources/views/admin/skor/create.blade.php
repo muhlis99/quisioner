@@ -5,8 +5,13 @@
 @section('page-subtitle', 'Tambahkan opsi nilai skor untuk penilaian kuisioner')
 
 @section('content')
-    <div class="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8">
-        <form method="POST" action="{{ route('admin.skor.store') }}" class="space-y-5">
+    <div class="mx-auto max-w-2xl overflow-hidden rounded-xl border border-emerald-100 bg-white shadow-sm">
+        <div class="border-b border-emerald-100 bg-emerald-50/60 px-6 py-4">
+            <h2 class="text-sm font-bold text-[#062419]">Formulir Skor Jawaban Baru</h2>
+            <p class="mt-0.5 text-xs text-slate-500">Isi bobot angka skor, keterangan penilaian, dan predikat huruf.</p>
+        </div>
+
+        <form method="POST" action="{{ route('admin.skor.store') }}" class="space-y-5 p-6 sm:p-8">
             @csrf
 
             <div>
@@ -20,10 +25,10 @@
                     value="{{ old('skor') }}"
                     required
                     placeholder="Contoh: 4"
-                    class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                    class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                 >
                 @error('skor')
-                    <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                    <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -36,10 +41,10 @@
                     value="{{ old('keterangan') }}"
                     required
                     placeholder="Contoh: Sangat Baik / Sangat Setuju"
-                    class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                    class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                 >
                 @error('keterangan')
-                    <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                    <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -52,19 +57,19 @@
                     value="{{ old('huruf') }}"
                     required
                     placeholder="Contoh: A / SB"
-                    class="mt-1.5 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                    class="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                 >
                 @error('huruf')
-                    <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                    <p class="mt-1.5 text-xs font-medium text-rose-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
-                <a href="{{ route('admin.skor.index') }}" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
-                    Batal
+            <div class="flex items-center justify-between gap-3 border-t border-emerald-100 pt-5">
+                <a href="{{ route('admin.skor.index') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
+                    &larr; Kembali
                 </a>
-                <button type="submit" class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-indigo-700">
-                    Simpan Skor
+                <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-[#20A464] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#17804D]">
+                    <span>Simpan Skor</span>
                 </button>
             </div>
         </form>

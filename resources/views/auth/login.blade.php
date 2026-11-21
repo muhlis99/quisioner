@@ -4,33 +4,33 @@
     @section('title', 'Masuk - Sistem Kuisioner & EDOM')
     @include('layouts.partials.head')
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-slate-800 antialiased">
+<body class="min-h-screen bg-gradient-to-br from-[#062419] via-[#0B6B3A] to-[#062419] text-slate-800 antialiased">
     <div class="flex min-h-screen items-center justify-center p-4 sm:p-6">
-        <div class="grid w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl shadow-slate-950/40 lg:grid-cols-12">
+        <div class="grid w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl shadow-[#062419]/60 lg:grid-cols-12">
             {{-- Panel Kiri: Identitas Sistem --}}
-            <div class="relative flex flex-col justify-between bg-slate-900 p-8 text-white sm:p-10 lg:col-span-5">
+            <div class="relative flex flex-col justify-between bg-[#062419] p-8 text-white sm:p-10 lg:col-span-5">
                 <div>
-                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 shadow-lg shadow-indigo-900/50">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0B6B3A] ring-1 ring-[#20A464]/50 shadow-lg shadow-black/30">
+                        <svg class="h-6 w-6 text-[#20A464]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
                         </svg>
                     </div>
 
-                    <h1 class="mt-6 text-2xl font-bold tracking-tight">
+                    <h1 class="mt-6 text-2xl font-bold tracking-tight text-white">
                         {{ config('app.name', 'Sistem Kuisioner') }}
                     </h1>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-300">
+                    <p class="mt-2 text-sm leading-relaxed text-emerald-100/80">
                         Portal Evaluasi Dosen Oleh Mahasiswa (EDOM) dan pengisian kuisioner akademik terintegrasi SIAKAD.
                     </p>
                 </div>
 
-                <div class="mt-8 space-y-3 border-t border-slate-800 pt-6 text-xs text-slate-300">
+                <div class="mt-8 space-y-3 border-t border-emerald-900/80 pt-6 text-xs text-emerald-100/80">
                     <div class="flex items-start gap-2.5">
-                        <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-400"></span>
+                        <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#20A464]"></span>
                         <p><strong class="text-white">Mahasiswa:</strong> Masuk menggunakan <strong>NIM</strong> dan password akun Anda.</p>
                     </div>
                     <div class="flex items-start gap-2.5">
-                        <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-indigo-400"></span>
+                        <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-emerald-300"></span>
                         <p><strong class="text-white">Admin:</strong> Masuk menggunakan <strong>Username</strong> administrator.</p>
                     </div>
                 </div>
@@ -39,7 +39,10 @@
             {{-- Panel Kanan: Form Login --}}
             <div class="p-8 sm:p-10 lg:col-span-7">
                 <div class="mb-6">
-                    <h2 class="text-xl font-bold text-slate-900 sm:text-2xl">Masuk ke Akun Anda</h2>
+                    <span class="inline-flex items-center rounded-full bg-[#E9F7F0] px-3 py-1 text-xs font-semibold text-[#0B6B3A]">
+                        Autentikasi Portal
+                    </span>
+                    <h2 class="mt-2.5 text-xl font-bold text-[#062419] sm:text-2xl">Masuk ke Akun Anda</h2>
                     <p class="mt-1 text-sm text-slate-500">
                         Sistem akan mengarahkan Anda otomatis ke Panel Admin atau Portal Mahasiswa.
                     </p>
@@ -69,7 +72,7 @@
                                 autofocus
                                 autocomplete="username"
                                 placeholder="Masukkan Username atau NIM"
-                                class="block w-full rounded-xl border @error('username') border-rose-400 bg-rose-50/40 @else border-slate-300 bg-white @enderror py-2.5 pr-4 pl-11 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                                class="block w-full rounded-xl border @error('username') border-rose-400 bg-rose-50/40 @else border-slate-300 bg-white @enderror py-2.5 pr-4 pl-11 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                             >
                         </div>
                         @error('username')
@@ -94,12 +97,12 @@
                                 required
                                 autocomplete="current-password"
                                 placeholder="Masukkan Password"
-                                class="block w-full rounded-xl border @error('password') border-rose-400 bg-rose-50/40 @else border-slate-300 bg-white @enderror py-2.5 pr-12 pl-11 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                                class="block w-full rounded-xl border @error('password') border-rose-400 bg-rose-50/40 @else border-slate-300 bg-white @enderror py-2.5 pr-12 pl-11 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#20A464] focus:ring-2 focus:ring-[#20A464]/25 focus:outline-none"
                             >
                             <button
                                 type="button"
                                 id="toggle-password"
-                                class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600"
+                                class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-[#0B6B3A]"
                                 aria-label="Tampilkan atau sembunyikan password"
                             >
                                 <svg id="eye-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -118,7 +121,7 @@
 
                     <button
                         type="submit"
-                        class="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500/40 focus:outline-none"
+                        class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0B6B3A] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#20A464] focus:ring-2 focus:ring-[#20A464]/40 focus:outline-none"
                     >
                         <span>Masuk</span>
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -134,25 +137,6 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('toggle-password');
-            const passwordInput = document.getElementById('password');
-            const eyeOpen = document.getElementById('eye-open');
-            const eyeClosed = document.getElementById('eye-closed');
-
-            toggleBtn?.addEventListener('click', () => {
-                if (!passwordInput) return;
-                const isPassword = passwordInput.type === 'password';
-                passwordInput.type = isPassword ? 'text' : 'password';
-                eyeOpen?.classList.toggle('hidden', isPassword);
-                eyeClosed?.classList.toggle('hidden', !isPassword);
-            });
-
-            document.querySelectorAll('[data-close-alert]').forEach((btn) => {
-                btn.addEventListener('click', () => btn.closest('[data-alert]')?.remove());
-            });
-        });
-    </script>
+    @include('layouts.partials.scripts')
 </body>
 </html>

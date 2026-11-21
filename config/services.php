@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'siakad' => [
+        'url' => env('SIAKAD_API_URL', 'https://apisiakad.ponpesnaa.net/v1'),
+        'auth_type' => env('SIAKAD_AUTH_TYPE', 'none'), // none | bearer | api_key
+        'token' => env('SIAKAD_API_TOKEN'),
+        'api_key_header' => env('SIAKAD_API_KEY_HEADER', 'X-API-Key'),
+        'timeout' => (int) env('SIAKAD_API_TIMEOUT', 60),
+        'retry_times' => (int) env('SIAKAD_API_RETRY', 2),
+        'verify_ssl' => filter_var(env('SIAKAD_VERIFY_SSL', true), FILTER_VALIDATE_BOOLEAN),
+    ],
+
 ];
