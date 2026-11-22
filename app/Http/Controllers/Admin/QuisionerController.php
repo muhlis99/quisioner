@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Quisioner;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -17,16 +18,43 @@ class QuisionerController extends Controller
         $semester = (string) $request->query('semester', '');
         $type = (string) $request->query('type', '');
 
+        if (! in_array($semester, ['ganjil', 'genap'], true)) {
+            $semester = '';
+        }
+
+        if (! in_array($type, ['edom', 'biasa'], true)) {
+            $type = '';
+        }
+
+        // 4 KPI ringkasan global instrumen aktif (hapus = '0')
+        $totalEdomAll = Quisioner::aktif()->where('type', 'edom')->count();
+        $totalBiasaAll = Quisioner::aktif()->where('type', 'biasa')->count();
+        $totalQuisionerAll = $totalEdomAll + $totalBiasaAll;
+        $totalPertanyaanAll = (int) DB::table('tb_pertanyaan')
+            ->join('tb_quisioner', 'tb_quisioner.id', '=', 'tb_pertanyaan.id_quisioner')
+            ->where('tb_quisioner.hapus', '0')
+            ->count();
+
+        $baseFilter = function ($query) use ($search, $semester): void {
+            $query
+                ->when($search !== '', function ($q) use ($search) {
+                    $q->where(function ($sub) use ($search) {
+                        $sub->where('judul_quisioner', 'like', "%{$search}%")
+                            ->orWhere('tahun_ajaran', 'like', "%{$search}%");
+                    });
+                })
+                ->when($semester !== '', fn ($q) => $q->where('semester', $semester));
+        };
+
+        // Counter tipe untuk Segmented Pill Filter (mengikuti search & semester aktif)
+        $countEdomFiltered = Quisioner::aktif()->tap($baseFilter)->where('type', 'edom')->count();
+        $countBiasaFiltered = Quisioner::aktif()->tap($baseFilter)->where('type', 'biasa')->count();
+        $countAllFiltered = $countEdomFiltered + $countBiasaFiltered;
+
         $quisioners = Quisioner::aktif()
             ->withCount('pertanyaan')
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where(function ($sub) use ($search) {
-                    $sub->where('judul_quisioner', 'like', "%{$search}%")
-                        ->orWhere('tahun_ajaran', 'like', "%{$search}%");
-                });
-            })
-            ->when(in_array($semester, ['ganjil', 'genap'], true), fn ($q) => $q->where('semester', $semester))
-            ->when(in_array($type, ['edom', 'biasa'], true), fn ($q) => $q->where('type', $type))
+            ->tap($baseFilter)
+            ->when($type !== '', fn ($q) => $q->where('type', $type))
             ->orderByDesc('id')
             ->paginate(15)
             ->withQueryString();
@@ -36,6 +64,17 @@ class QuisionerController extends Controller
             'search' => $search,
             'semester' => $semester,
             'type' => $type,
+            'kpi' => [
+                'total_quisioner' => $totalQuisionerAll,
+                'total_edom' => $totalEdomAll,
+                'total_biasa' => $totalBiasaAll,
+                'total_pertanyaan' => $totalPertanyaanAll,
+            ],
+            'typeCounts' => [
+                'all' => $countAllFiltered,
+                'edom' => $countEdomFiltered,
+                'biasa' => $countBiasaFiltered,
+            ],
         ]);
     }
 

@@ -39,7 +39,7 @@
                         >
                     </div>
                     <div class="min-w-0 transition-opacity duration-200">
-                        <p class="truncate text-sm font-bold tracking-tight text-white transition group-hover:text-emerald-100">Sistem Kuisioner / STAINAA</p>
+                        <p class="truncate text-sm font-bold tracking-tight text-white transition group-hover:text-emerald-100">Sistem Kuisioner STAINAA</p>
                         <p class="truncate text-[11px] font-medium text-[#20A464]">Panel Admin &amp; EDOM</p>
                     </div>
                 </a>

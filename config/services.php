@@ -45,4 +45,11 @@ return [
         'verify_ssl' => filter_var(env('SIAKAD_VERIFY_SSL', true), FILTER_VALIDATE_BOOLEAN),
     ],
 
+    'siamdos' => [
+        'url' => env('SIAMDOS_API_URL', 'https://apisiamdos.ponpesnaa.net/v1'),
+        'timeout' => (int) env('SIAMDOS_API_TIMEOUT', 30),
+        'retry_times' => (int) env('SIAMDOS_API_RETRY', 2),
+        'verify_ssl' => filter_var(env('SIAMDOS_VERIFY_SSL', true), FILTER_VALIDATE_BOOLEAN),
+    ],
+
 ];

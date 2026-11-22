@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Dosen;
 use App\Models\Hasil;
+use App\Models\Mahasiswa;
 use App\Models\Quisioner;
 use App\Models\Skor;
 use Illuminate\Http\Request;
@@ -18,27 +19,48 @@ class LaporanController extends Controller
         $search = trim((string) $request->query('search', ''));
         $type = (string) $request->query('type', '');
 
-        $quisioners = Quisioner::aktif()
-            ->withCount('pertanyaan')
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where(function ($sub) use ($search) {
+        if (! in_array($type, ['edom', 'biasa'], true)) {
+            $type = '';
+        }
+
+        $searchFilter = function ($query) use ($search): void {
+            $query->when($search !== '', function ($q) use ($search) {
+                $q->where(function ($sub) use ($search) {
                     $sub->where('judul_quisioner', 'like', "%{$search}%")
                         ->orWhere('tahun_ajaran', 'like', "%{$search}%");
                 });
-            })
-            ->when(in_array($type, ['edom', 'biasa'], true), fn ($q) => $q->where('type', $type))
+            });
+        };
+
+        // Hitung jumlah per tipe (menghormati pencarian aktif) untuk Segmented Pill Filter & KPI
+        $countEdom = Quisioner::aktif()->tap($searchFilter)->where('type', 'edom')->count();
+        $countBiasa = Quisioner::aktif()->tap($searchFilter)->where('type', 'biasa')->count();
+        $countAll = $countEdom + $countBiasa;
+
+        // Ambil seluruh ID quisioner sesuai filter aktif untuk agregasi statistik responden & jawaban (1 query)
+        $filteredIds = Quisioner::aktif()
+            ->tap($searchFilter)
+            ->when($type !== '', fn ($q) => $q->where('type', $type))
+            ->pluck('id')
+            ->all();
+
+        $quisioners = Quisioner::aktif()
+            ->withCount('pertanyaan')
+            ->tap($searchFilter)
+            ->when($type !== '', fn ($q) => $q->where('type', $type))
             ->orderByDesc('id')
             ->paginate(15)
             ->withQueryString();
 
-        // Hitung jumlah responden unik & total entri jawaban per kuisioner di halaman aktif
-        $quisionerIds = $quisioners->pluck('id')->all();
+        // Hitung jumlah responden unik & total entri jawaban per quisioner
         $statsByQuisioner = [];
+        $totalRespondenSum = 0;
+        $totalJawabanSum = 0;
 
-        if (! empty($quisionerIds)) {
+        if (! empty($filteredIds)) {
             $rows = DB::table('tb_hasil')
                 ->join('tb_pertanyaan', 'tb_pertanyaan.id', '=', 'tb_hasil.id_pertanyaan')
-                ->whereIn('tb_pertanyaan.id_quisioner', $quisionerIds)
+                ->whereIn('tb_pertanyaan.id_quisioner', $filteredIds)
                 ->select(
                     'tb_pertanyaan.id_quisioner',
                     DB::raw('COUNT(DISTINCT tb_hasil.nim) as total_responden'),
@@ -48,18 +70,48 @@ class LaporanController extends Controller
                 ->get();
 
             foreach ($rows as $row) {
+                $responden = (int) $row->total_responden;
+                $jawaban = (int) $row->total_jawaban;
                 $statsByQuisioner[(int) $row->id_quisioner] = [
-                    'responden' => (int) $row->total_responden,
-                    'jawaban' => (int) $row->total_jawaban,
+                    'responden' => $responden,
+                    'jawaban' => $jawaban,
                 ];
+                $totalRespondenSum += $responden;
+                $totalJawabanSum += $jawaban;
             }
         }
+
+        // Periode aktif / terbaru & total mahasiswa aktif untuk indikator partisipasi
+        $latestQuisioner = Quisioner::aktif()
+            ->orderByDesc('tahun_ajaran')
+            ->orderByDesc('id')
+            ->first(['tahun_ajaran', 'semester']);
+
+        $periodeTerbaru = $latestQuisioner
+            ? trim((string) $latestQuisioner->tahun_ajaran) . ' • ' . ucfirst((string) $latestQuisioner->semester)
+            : 'Belum Ada Periode';
+
+        $totalMahasiswa = Mahasiswa::count();
 
         return view('admin.laporan.index', [
             'quisioners' => $quisioners,
             'statsByQuisioner' => $statsByQuisioner,
             'search' => $search,
             'type' => $type,
+            'totalMahasiswa' => $totalMahasiswa,
+            'typeCounts' => [
+                'all' => $countAll,
+                'edom' => $countEdom,
+                'biasa' => $countBiasa,
+            ],
+            'kpi' => [
+                'total_quisioner' => count($filteredIds),
+                'total_edom' => $countEdom,
+                'total_biasa' => $countBiasa,
+                'total_responden' => $totalRespondenSum,
+                'total_jawaban' => $totalJawabanSum,
+                'periode_terbaru' => $periodeTerbaru,
+            ],
         ]);
     }
 

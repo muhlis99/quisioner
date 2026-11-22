@@ -62,7 +62,10 @@ Route::prefix('admin')
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
         Route::get('/laporan/{quisioner}', [LaporanController::class, 'show'])->name('laporan.show');
 
-        // 6. Menu Jatah Mata Kuliah (tb_jatah_makul)
+        // 6. Menu Jatah Mata Kuliah (tb_jatah_makul + Generate Otomatis API SIAMDOS)
+        Route::post('/jatah-makul/fetch-api', [JatahMakulController::class, 'fetchFromApi'])->name('jatah-makul.fetch-api');
+        Route::post('/jatah-makul/store-api', [JatahMakulController::class, 'storeFromApi'])->name('jatah-makul.store-api');
+        Route::post('/jatah-makul/generate-massal', [JatahMakulController::class, 'generateMassal'])->name('jatah-makul.generate-massal');
         Route::resource('jatah-makul', JatahMakulController::class)
             ->parameters(['jatah-makul' => 'jatahMakul'])
             ->except(['show']);
