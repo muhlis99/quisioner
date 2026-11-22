@@ -1138,10 +1138,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        const setCardAnsweredState = (card, isAnswered) => {
+            const answeredBadge = card.querySelector('.mhs-answered-badge');
+            const numberBadge = card.querySelector('.mhs-question-number');
+
+            card.classList.toggle('border-l-[#2563EB]', isAnswered);
+            card.classList.toggle('border-l-transparent', !isAnswered);
+            card.classList.toggle('bg-blue-50/20', isAnswered);
+
+            if (answeredBadge) {
+                answeredBadge.classList.toggle('hidden', !isAnswered);
+                answeredBadge.classList.toggle('inline-flex', isAnswered);
+            }
+
+            if (numberBadge) {
+                numberBadge.classList.toggle('bg-[#2563EB]', isAnswered);
+                numberBadge.classList.toggle('text-white', isAnswered);
+                numberBadge.classList.toggle('ring-[#2563EB]', isAnswered);
+                numberBadge.classList.toggle('bg-blue-50', !isAnswered);
+                numberBadge.classList.toggle('text-[#2563EB]', !isAnswered);
+                numberBadge.classList.toggle('ring-blue-200/80', !isAnswered);
+            }
+        };
+
         const updateFormProgress = () => {
             let answered = 0;
             questionCards.forEach((card) => {
                 const ok = isCardAnswered(card);
+                setCardAnsweredState(card, ok);
                 if (ok) {
                     answered += 1;
                     setCardErrorState(card, false);

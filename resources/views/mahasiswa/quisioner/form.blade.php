@@ -11,16 +11,23 @@
 @endsection
 
 @section('content')
-    <div class="mx-auto max-w-4xl space-y-5">
-        {{-- Sticky Progress Tracker Real-Time --}}
+    @php
+        // Urutkan skala huruf rapi dari A -> E (tetap mempertahankan value="{{ $s->skor }}" asli)
+        $skorsOrdered = $skors
+            ->sortBy(fn ($s) => [strtoupper(trim((string) $s->huruf)) ?: 'Z', -((int) $s->skor)])
+            ->values();
+    @endphp
+
+    <div class="mx-auto max-w-4xl space-y-5 pb-8">
+        {{-- Sticky Progress Card (Solid White agar tidak ada kebocoran warna/garis saat di-scroll) --}}
         <div
             id="mhs-form-sticky-tracker"
             data-total-questions="{{ $totalPertanyaan }}"
-            class="sticky top-16 z-20 rounded-2xl border border-blue-200/80 bg-white/95 px-4 py-3.5 shadow-md backdrop-blur-sm sm:px-5"
+            class="sticky top-[4.25rem] z-20 rounded-2xl border border-blue-100/90 bg-white px-4 py-3.5 shadow-sm ring-1 ring-blue-950/5 sm:px-5"
         >
             <div class="flex flex-wrap items-center justify-between gap-2">
-                <div class="flex items-center gap-2">
-                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-[#2563EB]">
+                <div class="flex items-center gap-2.5">
+                    <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#2563EB] ring-1 ring-blue-100">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -33,16 +40,16 @@
                     Tersisa {{ $totalPertanyaan }} soal
                 </span>
             </div>
-            <div class="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-blue-100">
+            <div class="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-slate-100">
                 <div
                     id="mhs-form-progress-bar"
-                    class="h-full rounded-full bg-gradient-to-r from-[#2563EB] to-[#60A5FA] transition-all duration-300 ease-out"
+                    class="h-full rounded-full bg-gradient-to-r from-[#2563EB] to-indigo-500 transition-all duration-300 ease-out"
                     style="width: 0%"
                 ></div>
             </div>
         </div>
 
-        {{-- Ringkasan Identitas Quisioner & Target Evaluasi --}}
+        {{-- Ringkasan Identitas Quisioner & Panduan Skala Penilaian Ringkas --}}
         <div class="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-xs">
             <div class="bg-gradient-to-r from-[#0F294A] via-[#1E3A8A] to-[#2563EB] px-5 py-4 text-white sm:px-6">
                 <div class="flex flex-wrap items-center gap-2">
@@ -76,16 +83,18 @@
                     </div>
                 @endif
 
-                {{-- Keterangan Skala Penilaian --}}
-                @if ($skors->isNotEmpty())
+                {{-- Panduan Skala Penilaian (Hanya Huruf = Keterangan, Tanpa Angka Skor) --}}
+                @if ($skorsOrdered->isNotEmpty())
                     <div>
-                        <p class="mb-2 text-[11px] font-bold uppercase tracking-wider text-slate-500">Panduan Skala Penilaian</p>
-                        <div class="flex flex-wrap gap-2">
-                            @foreach ($skors as $s)
-                                <span class="inline-flex items-center gap-1.5 rounded-lg border border-blue-100 bg-blue-50/50 px-2.5 py-1 text-xs text-slate-700">
-                                    <strong class="font-bold text-[#2563EB]">{{ $s->skor }}</strong>
-                                    <span class="font-semibold text-[#0F294A]">({{ $s->huruf }})</span>
-                                    <span class="text-slate-600">&ndash; {{ $s->keterangan }}</span>
+                        <p class="mb-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">Panduan Skala Penilaian</p>
+                        <div class="flex flex-wrap items-center gap-2">
+                            @foreach ($skorsOrdered as $s)
+                                <span class="inline-flex items-center gap-1.5 rounded-xl border border-blue-100 bg-blue-50/50 px-3 py-1.5 text-xs">
+                                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-md bg-[#2563EB] text-[11px] font-extrabold text-white">
+                                        {{ strtoupper(trim((string) $s->huruf)) }}
+                                    </span>
+                                    <span class="text-slate-400">=</span>
+                                    <span class="font-semibold text-[#0F294A]">{{ $s->keterangan }}</span>
                                 </span>
                             @endforeach
                         </div>
@@ -101,7 +110,7 @@
             action="{{ route('mahasiswa.quisioner.store', $quisioner) }}"
             data-quisioner-title="{{ $quisioner->judul_quisioner }}"
             novalidate
-            class="space-y-6"
+            class="space-y-5"
         >
             @csrf
 
@@ -115,7 +124,7 @@
                 <div class="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-xs">
                     <div class="flex items-center justify-between border-b border-blue-100 bg-blue-50/70 px-5 py-3.5 sm:px-6">
                         <h3 class="text-sm font-bold text-[#0F294A]">{{ $kategori }}</h3>
-                        <span class="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-[#1E3A8A] ring-1 ring-blue-100">
+                        <span class="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold text-[#1E3A8A] ring-1 ring-blue-100 tabular-nums">
                             {{ $daftarPertanyaan->count() }} soal
                         </span>
                     </div>
@@ -131,13 +140,13 @@
                             @endphp
 
                             <div
-                                class="mhs-question-card p-5 transition sm:p-6 @error($errorKey) bg-rose-50/40 @enderror"
+                                class="mhs-question-card border-l-4 border-l-transparent p-5 transition-all duration-200 sm:p-6 @error($errorKey) bg-rose-50/40 @enderror"
                                 data-question-id="{{ $p->id }}"
                                 data-question-no="{{ $currentNo }}"
                                 data-question-type="{{ $isPilihan ? 'pilihan' : 'esai' }}"
                             >
-                                <div class="flex items-start gap-3">
-                                    <span class="mhs-question-number flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xs font-extrabold text-[#2563EB] ring-1 ring-blue-200/80 tabular-nums">
+                                <div class="flex items-start gap-3 sm:gap-3.5">
+                                    <span class="mhs-question-number flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xs font-extrabold text-[#2563EB] ring-1 ring-blue-200/80 transition-colors duration-200 tabular-nums sm:h-8 sm:w-8">
                                         {{ $currentNo }}
                                     </span>
                                     <div class="min-w-0 flex-1">
@@ -146,50 +155,58 @@
                                                 {{ $p->isi_pertanyaan }}
                                                 <span class="text-rose-500">*</span>
                                             </p>
-                                            <span class="mhs-unanswered-badge hidden shrink-0 items-center gap-1 rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-bold text-rose-700">
-                                                Wajib diisi
-                                            </span>
+                                            <div class="flex shrink-0 items-center gap-1.5">
+                                                <span class="mhs-answered-badge hidden items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-bold text-[#2563EB] ring-1 ring-blue-200/80">
+                                                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                    </svg>
+                                                    <span>Terjawab</span>
+                                                </span>
+                                                <span class="mhs-unanswered-badge hidden items-center gap-1 rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-bold text-rose-700">
+                                                    Wajib diisi
+                                                </span>
+                                            </div>
                                         </div>
 
                                         @if ($isPilihan)
-                                            @if ($skors->isEmpty())
+                                            @if ($skorsOrdered->isEmpty())
                                                 <p class="mt-3 rounded-xl bg-amber-50 px-3.5 py-2.5 text-xs text-amber-800">
                                                     Opsi skor belum diatur oleh Admin pada tabel <code class="font-semibold">tb_skor</code>.
                                                 </p>
                                             @else
                                                 @php
-                                                    $gridColsClass = match (min(max($skors->count(), 2), 5)) {
-                                                        2 => 'sm:grid-cols-2',
-                                                        3 => 'sm:grid-cols-3',
-                                                        4 => 'sm:grid-cols-2 lg:grid-cols-4',
-                                                        default => 'sm:grid-cols-2 lg:grid-cols-5',
+                                                    $letterGridClass = match ($skorsOrdered->count()) {
+                                                        2 => 'grid-cols-2 max-w-xs',
+                                                        3 => 'grid-cols-3 max-w-sm',
+                                                        4 => 'grid-cols-4 max-w-md',
+                                                        default => 'grid-cols-5',
                                                     };
                                                 @endphp
-                                                {{-- Interactive Radio Cards / Pills Ramah Sentuhan HP --}}
-                                                <div class="mt-4 grid grid-cols-1 gap-2.5 {{ $gridColsClass }}">
-                                                    @foreach ($skors as $s)
-                                                        <label class="group relative flex min-h-[60px] cursor-pointer items-center justify-between gap-3 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 transition duration-150 hover:border-[#3B82F6] hover:bg-blue-50/50 has-[:checked]:border-[#2563EB] has-[:checked]:bg-[#2563EB] has-[:checked]:text-white has-[:checked]:shadow-md">
+                                                {{-- Interactive Letter Tiles (Hanya Huruf A, B, C, D, E; value tetap skor asli) --}}
+                                                <div class="mt-4 grid gap-2.5 sm:gap-3.5 {{ $letterGridClass }}">
+                                                    @foreach ($skorsOrdered as $s)
+                                                        @php $hurufLabel = strtoupper(trim((string) $s->huruf)) ?: (string) $s->skor; @endphp
+                                                        <label
+                                                            title="{{ $hurufLabel }} = {{ $s->keterangan }}"
+                                                            class="relative block cursor-pointer select-none"
+                                                        >
                                                             <input
                                                                 type="radio"
                                                                 name="{{ $fieldName }}"
                                                                 value="{{ $s->skor }}"
                                                                 @checked((string) $oldVal === (string) $s->skor)
                                                                 required
-                                                                class="sr-only mhs-answer-radio"
+                                                                aria-label="Pilihan {{ $hurufLabel }} ({{ $s->keterangan }})"
+                                                                class="sr-only peer mhs-answer-radio"
                                                             >
-                                                            <div class="min-w-0">
-                                                                <span class="flex items-center gap-1.5 text-sm font-extrabold text-[#0F294A] group-has-[:checked]:text-white">
-                                                                    <span>{{ $s->skor }}</span>
-                                                                    <span class="rounded-md bg-blue-50 px-1.5 py-0.5 text-[11px] font-bold text-[#2563EB] group-has-[:checked]:bg-white/20 group-has-[:checked]:text-white">
-                                                                        {{ $s->huruf }}
-                                                                    </span>
-                                                                </span>
-                                                                <span class="mt-0.5 block text-xs text-slate-500 group-has-[:checked]:text-blue-100">
-                                                                    {{ $s->keterangan }}
-                                                                </span>
-                                                            </div>
-                                                            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-slate-300 bg-white transition group-has-[:checked]:border-white group-has-[:checked]:bg-white">
-                                                                <svg class="hidden h-3 w-3 text-[#2563EB] group-has-[:checked]:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                            <span class="flex h-12 w-full items-center justify-center rounded-2xl border border-slate-200 bg-white text-lg font-bold text-slate-700 shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400 hover:bg-blue-50/70 hover:text-[#1E3A8A] peer-checked:scale-[1.03] peer-checked:border-transparent peer-checked:bg-gradient-to-br peer-checked:from-blue-600 peer-checked:to-indigo-600 peer-checked:text-white peer-checked:shadow-lg peer-checked:shadow-blue-600/25 peer-checked:ring-2 peer-checked:ring-blue-400/40 peer-focus-visible:ring-4 peer-focus-visible:ring-blue-500/25 sm:h-14">
+                                                                {{ $hurufLabel }}
+                                                            </span>
+                                                            <span
+                                                                aria-hidden="true"
+                                                                class="pointer-events-none absolute top-1.5 right-1.5 hidden h-4 w-4 items-center justify-center rounded-full bg-white/25 text-white ring-1 ring-white/40 peer-checked:flex"
+                                                            >
+                                                                <svg class="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.2">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                                                 </svg>
                                                             </span>
@@ -206,7 +223,7 @@
                                                     maxlength="2000"
                                                     required
                                                     placeholder="Tuliskan jawaban, kesan, atau saran Anda di sini..."
-                                                    class="mhs-answer-textarea block w-full rounded-xl border-2 @error($errorKey) border-rose-400 @else border-slate-200 @enderror bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/15 focus:outline-none"
+                                                    class="mhs-answer-textarea block w-full rounded-2xl border @error($errorKey) border-rose-400 @else border-slate-200 @enderror bg-slate-50/50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-[#2563EB] focus:bg-white focus:ring-4 focus:ring-blue-500/15 focus:outline-none"
                                                 >{{ $oldVal }}</textarea>
                                                 <div class="mt-1.5 flex items-center justify-between text-[11px] text-slate-400">
                                                     <span>Isi jawaban dengan jelas dan konstruktif</span>
@@ -231,16 +248,16 @@
                 <p class="text-xs leading-relaxed text-slate-500">
                     Pastikan seluruh pertanyaan telah terjawab dengan tepat sebelum mengirim. Jawaban yang telah terkirim akan langsung tersimpan dan dikunci.
                 </p>
-                <div class="flex items-center justify-end gap-3">
-                    <a href="{{ route('mahasiswa.quisioner.index') }}" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
+                <div class="flex flex-col-reverse items-stretch gap-2.5 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
+                    <a href="{{ route('mahasiswa.quisioner.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
                         Batal
                     </a>
                     <button
                         type="submit"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2563EB] px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#1D4ED8]"
+                        class="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-indigo-600 px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-blue-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-600/30"
                     >
                         <span>Kirim Jawaban</span>
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                         </svg>
                     </button>
